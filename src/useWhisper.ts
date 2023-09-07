@@ -8,7 +8,6 @@ import {
   defaultStopTimeout,
   ffmpegCoreUrl,
   silenceRemoveCommand,
-  whisperApiEndpoint,
 } from './configs'
 import {
   UseWhisperConfig,
@@ -22,6 +21,7 @@ import {
  */
 const defaultConfig: UseWhisperConfig = {
   apiKey: '',
+  apiUrl: '',
   autoStart: false,
   autoTranscribe: true,
   mode: 'transcriptions',
@@ -55,6 +55,7 @@ const defaultTranscript: UseWhisperTranscript = {
 export const useWhisper: UseWhisperHook = (config) => {
   const {
     apiKey,
+    apiUrl,
     autoStart,
     autoTranscribe,
     mode,
@@ -71,8 +72,8 @@ export const useWhisper: UseWhisperHook = (config) => {
     ...config,
   }
 
-  if (!apiKey && !onTranscribeCallback) {
-    throw new Error('apiKey is required if onTranscribe is not provided')
+  if (!apiUrl) {
+    throw new Error('apiUrl is required')
   }
 
   const chunks = useRef<Blob[]>([])
@@ -152,6 +153,18 @@ export const useWhisper: UseWhisperHook = (config) => {
    */
   const stopRecording = async () => {
     await onStopRecording()
+  }
+
+  /**
+   * restart speech recording, flushing any buffers, and start transcription
+   */
+  const restartRecording = async () => {
+    if (chunks.current) {
+      chunks.current = []
+    }
+    if (encoder.current) {
+      encoder.current.flush()
+    }
   }
 
   /**
@@ -311,14 +324,14 @@ export const useWhisper: UseWhisperHook = (config) => {
         onStopStreaming()
         onStopTimeout('stop')
         setRecording(false)
-        if (autoTranscribe) {
-          await onTranscribing()
-        } else {
-          const blob = await recorder.current.getBlob()
-          setTranscript({
-            blob,
-          })
-        }
+        // if (autoTranscribe) {
+        //   await onTranscribing()
+        // } else {
+        //   const blob = await recorder.current.getBlob()
+        //   setTranscript({
+        //     blob,
+        //   })
+        // }
         await recorder.current.destroy()
         chunks.current = []
         if (encoder.current) {
@@ -519,12 +532,12 @@ export const useWhisper: UseWhisperHook = (config) => {
         headers['Authorization'] = `Bearer ${apiKey}`
       }
       const { default: axios } = await import('axios')
-      const response = await axios.post(whisperApiEndpoint + mode, body, {
+      const response = await axios.post(apiUrl + mode, body, {
         headers,
       })
       return response.data.text
     },
-    [apiKey, mode, whisperConfig]
+    [apiKey, apiUrl, mode, whisperConfig]
   )
 
   return {
@@ -535,5 +548,6 @@ export const useWhisper: UseWhisperHook = (config) => {
     pauseRecording,
     startRecording,
     stopRecording,
+    restartRecording,
   }
 }
