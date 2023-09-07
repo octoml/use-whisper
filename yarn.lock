@@ -297,16 +297,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@pkgjs/parseargs@npm:^0.11.0":
-  version: 0.11.0
-  resolution: "@pkgjs/parseargs@npm:0.11.0"
-  checksum: 6ad6a00fc4f2f2cfc6bff76fb1d88b8ee20bc0601e18ebb01b6d4be583733a860239a521a7fbca73b612e66705078809483549d2b18f370eb346c5155c8e4a0f
-  languageName: node
-  linkType: hard
-
-"@rkimball/use-whisper@workspace:.":
+"@octoml/use-whisper@workspace:.":
   version: 0.0.0-use.local
-  resolution: "@rkimball/use-whisper@workspace:."
+  resolution: "@octoml/use-whisper@workspace:."
   dependencies:
     "@chengsokdara/react-hooks-async": ^0.0.2
     "@ffmpeg/ffmpeg": ^0.11.6
@@ -331,6 +324,13 @@ __metadata:
     react: "*"
   languageName: unknown
   linkType: soft
+
+"@pkgjs/parseargs@npm:^0.11.0":
+  version: 0.11.0
+  resolution: "@pkgjs/parseargs@npm:0.11.0"
+  checksum: 6ad6a00fc4f2f2cfc6bff76fb1d88b8ee20bc0601e18ebb01b6d4be583733a860239a521a7fbca73b612e66705078809483549d2b18f370eb346c5155c8e4a0f
+  languageName: node
+  linkType: hard
 
 "@tootallnate/once@npm:2":
   version: 2.0.0
